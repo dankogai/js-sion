@@ -147,6 +147,13 @@ const toDate = (str) => {
     var d = toDouble(str.slice(6,-1));
     return isNaN(d) ? undefined : new Date(d * 1000);
 }
+const toData = (str) => {
+    if (!str.startsWith('.Data("')) { return undefined; }
+    if (!str.endsWith('")'))        { return undefined; }
+    let b64 = str.slice(7, -2);
+    return nodebuf ? new Uint8Array(nodebuf.from(b64, 'base64'))
+        : Uint8Array.of(atob(b64));
+}
 const toString = (str) => {
     if (!str.startsWith('"')) { return undefined; }
     if (!str.endsWith('"'))   { return undefined; }
@@ -158,6 +165,7 @@ const toElement = (str) => {
     v = toDate(str);     if (v !== undefined){ return v; }
     v = toDouble(str);   if (v !== undefined){ return v; }
     v = toInt(str);      if (v !== undefined){ return v; }
+    v = toData(str);     if (v !== undefined){ return v; }
     return toString(str);
 }
 const toCollection = (tokens) => {
