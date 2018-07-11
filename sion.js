@@ -63,11 +63,14 @@ const stringify = (obj) => {
         return '.Date(' + toHexString(obj.getTime() / 1000) + ')';
     }
     if (Array.isArray(obj)) {
-        return '[' + obj.map(e => stringify(e)).join(',') + ']';
+        return '['
+            + obj.map(e => stringify(e)).filter(e => typeof e !== 'function').join(',') 
+            +  ']';
     }
     if (obj instanceof Map) {
         var a = []
         for (var [k, v] of obj) {
+            if (typeof v === 'function') { continue; }
             a.push(stringify(k) + ':' + stringify(v));
         } 
         return a.length === 0 ? '[:]' : '[' + a.join(',') + ']';
@@ -84,7 +87,7 @@ const stringify = (obj) => {
         case 'string':
             return JSON.stringify(obj)
         default:
-             let a = Object.keys(obj).map(
+             let a = Object.keys(obj).filter(k => typeof obj[k] !== 'function').map(
                  k => stringify(k) + ':' + stringify(obj[k])
             )
             return a.length === 0 ? '[:]' : '[' + a.join(',') + ']';
