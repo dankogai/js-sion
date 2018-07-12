@@ -60,6 +60,11 @@ const stringify = (obj, replacer, space, depth) => {
     let gp = space ? ' ' : '';
     let sp = !space ? '' : typeof space === 'number' ? ' '.repeat(space) : space;
     let tb = sp.repeat(depth);
+    const map2sion = (kvs) => {
+        return kvs.length === 0 ? '[:]' : '[' + lf
+            +  kvs.map(e => tb + sp + e).join(',' + lf) + lf
+            +  tb + ']' + (depth == 0 ? lf : '');
+    };
     if (obj == null) { return 'nil'; }
     if (obj instanceof Date) { 
         return '.Date(' + toHexString(obj.getTime() / 1000) + ')';
@@ -73,17 +78,15 @@ const stringify = (obj, replacer, space, depth) => {
             +  tb + ']' + (depth == 0 ? lf : '');
     }
     if (obj instanceof Map) {
-        var a = []
+        var kvs = [];
         for (var [k, v] of obj) {
             if (typeof v === 'function') { continue; }
-            a.push(stringify(k, replacer, space, depth+1) 
+            kvs.push(stringify(k, replacer, space, depth+1)
                 + gp + ':' + gp
                 +  stringify(v, replacer, space, depth+1)
             );
         } 
-        return a.length === 0 ? '[:]' : '[' + lf
-                + a.map(e => tb + sp + e).join(',' + lf) + lf
-                + tb + ']' + (depth == 0 ? lf : '');
+        return map2sion(kvs);
     }
     const base64 = ArrayBuffer2Base64(obj);
     if (base64) { 
@@ -97,14 +100,12 @@ const stringify = (obj, replacer, space, depth) => {
         case 'string':
             return JSON.stringify(obj)
         default:
-             let a = Object.keys(obj).filter(k => typeof obj[k] !== 'function').map(
+             let kvs = Object.keys(obj).filter(k => typeof obj[k] !== 'function').map(
                  k => stringify(k, replacer, space, depth+1)
                      + gp + ':' + gp
                      + stringify(obj[k], replacer, space, depth+1)
             )
-            return a.length === 0 ? '[:]' : '[' + lf
-                + a.map(e => tb + sp + e).join(',' + lf) + lf
-                + tb + ']' + (depth == 0 ? lf : '');
+            return map2sion(kvs);
     }
 }
 const s_null = "nil";
@@ -236,7 +237,7 @@ const parse = (str) => {
         : undefined;
 }
 const SION = {
-    version: "0.0.2",
+    version: "0.0.3",
     RE_HEXFLOAT: RE_HEXFLOAT,
     RE_HEXFLOAT_G: RE_HEXFLOAT_G,
     parseHexFloat: parseHexFloat,

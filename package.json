@@ -1,11 +1,8 @@
 {
   "name": "js-sion",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "SION deserializer/serializer for ECMAScript",
   "main": "sion.js",
-  "scripts": {
-    "test": "mocha"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dankogai/js-sion.git"

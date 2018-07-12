@@ -3,6 +3,9 @@ describe('Load', () => {
   it('SION is an object', () => 
     chai.expect(typeof SION).to.equal('object')
   );
+  it('SION.parse is a function', () =>
+    chai.expect(typeof SION.parse).to.equal('function')
+  );
   it('SION.stringify is a function', () => 
     chai.expect(typeof SION.stringify).to.equal('function')
   );
