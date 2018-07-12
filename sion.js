@@ -17,15 +17,11 @@ const parseHexFloat = (str) => {
     return mantissa * Math.pow(2, exponent);
 };
 const toHexString = (num) => {
-    if (isNaN(num)) {
-        return 'nan';
-    }
+    if (isNaN(num)) { return 'nan'; }
     const n = +num;
-    if (Object.is(n, +0.0)) {
-        return '0x0p+0';
-    } else if (Object.is(n, -0.0)) {
-        return '-0x0p+0';
-    } else if (!isFinite(n)) {
+    if      (Object.is(n, +0.0)) { return  '0x0p+0'; } 
+    else if (Object.is(n, -0.0)) { return '-0x0p+0'; } 
+    else if (!isFinite(n)) {
         return (n < 0 ? '-' : '') + 'inf';
     }
     const sign = n < 0 ? '-' : '';
@@ -48,7 +44,8 @@ if (typeof module !== 'undefined' && module.exports) {
 const ArrayBuffer2Base64 = (obj) => {
     if (!!Object.getPrototypeOf(obj,'buffer')) { 
         if (obj.buffer instanceof ArrayBuffer) {
-            return nodebuf ? nodebuf.from(obj.buffer).toString('base64')
+            return nodebuf 
+            ? nodebuf.from(obj.buffer).toString('base64')
             : btoa(
                 Array.from(new Uint8Array(obj.buffer, 0, obj.byteLength), 
                 e => String.fromCharCode(e)).join('')
@@ -57,23 +54,36 @@ const ArrayBuffer2Base64 = (obj) => {
     }
     return undefined;
 }
-const stringify = (obj) => {
+const stringify = (obj, replacer, space, depth) => {
+    depth |= 0;
+    let lf = space ? '\n' : '';
+    let gp = space ? ' ' : '';
+    let sp = !space ? '' : typeof space === 'number' ? ' '.repeat(space) : space;
+    let tb = sp.repeat(depth);
     if (obj == null) { return 'nil'; }
     if (obj instanceof Date) { 
         return '.Date(' + toHexString(obj.getTime() / 1000) + ')';
     }
     if (Array.isArray(obj)) {
-        return '['
-            + obj.map(e => stringify(e)).filter(e => typeof e !== 'function').join(',') 
-            +  ']';
+        return '[' + lf
+            + obj.filter(e => typeof e !== 'function')
+                .map(e => stringify(e, replacer, space, depth+1))
+                .map(e => tb + sp + e)
+                .join(',' + lf) + lf
+            +  tb + ']' + (depth == 0 ? lf : '');
     }
     if (obj instanceof Map) {
         var a = []
         for (var [k, v] of obj) {
             if (typeof v === 'function') { continue; }
-            a.push(stringify(k) + ':' + stringify(v));
+            a.push(stringify(k, replacer, space, depth+1) 
+                + gp + ':' + gp
+                +  stringify(v, replacer, space, depth+1)
+            );
         } 
-        return a.length === 0 ? '[:]' : '[' + a.join(',') + ']';
+        return a.length === 0 ? '[:]' : '[' + lf
+                + a.map(e => tb + sp + e).join(',' + lf) + lf
+                + tb + ']' + (depth == 0 ? lf : '');
     }
     const base64 = ArrayBuffer2Base64(obj);
     if (base64) { 
@@ -88,9 +98,13 @@ const stringify = (obj) => {
             return JSON.stringify(obj)
         default:
              let a = Object.keys(obj).filter(k => typeof obj[k] !== 'function').map(
-                 k => stringify(k) + ':' + stringify(obj[k])
+                 k => stringify(k, replacer, space, depth+1)
+                     + gp + ':' + gp
+                     + stringify(obj[k], replacer, space, depth+1)
             )
-            return a.length === 0 ? '[:]' : '[' + a.join(',') + ']';
+            return a.length === 0 ? '[:]' : '[' + lf
+                + a.map(e => tb + sp + e).join(',' + lf) + lf
+                + tb + ']' + (depth == 0 ? lf : '');
     }
 }
 const s_null = "nil";
@@ -222,7 +236,7 @@ const parse = (str) => {
         : undefined;
 }
 const SION = {
-    version: "0.0.0",
+    version: "0.0.2",
     RE_HEXFLOAT: RE_HEXFLOAT,
     RE_HEXFLOAT_G: RE_HEXFLOAT_G,
     parseHexFloat: parseHexFloat,
