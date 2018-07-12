@@ -39,6 +39,14 @@ Or in your HTML:
 </script>
 ```
 
+You can even directly `import` from CDN:
+
+```html
+<script type="module">
+  import SION from 'https://cdn.rawgit.com/dankogai/js-sion/master/sion.js';
+</script>
+```
+
 ### on node.js
 
 There are verious -- too many -- ways to use modules in node.js.  Among which I found [esm] the easiest to use.
