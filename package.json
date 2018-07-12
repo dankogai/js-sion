@@ -1,6 +1,6 @@
 {
   "name": "js-sion",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "SION deserializer/serializer for ECMAScript",
   "main": "sion.js",
   "scripts": {
