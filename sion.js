@@ -45,11 +45,10 @@ const ArrayBuffer2Base64 = (obj) => {
     if (!!Object.getPrototypeOf(obj,'buffer')) { 
         if (obj.buffer instanceof ArrayBuffer) {
             return nodebuf 
-            ? nodebuf.from(obj.buffer).toString('base64')
-            : btoa(
-                Array.from(new Uint8Array(obj.buffer, 0, obj.byteLength), 
-                e => String.fromCharCode(e)).join('')
-            )
+                ? nodebuf.from(obj.buffer).toString('base64')
+                : btoa(
+                    String.fromCharCode.apply(null, new Uint8Array(obj.buffer))
+                );
         }
     }
     return undefined;
@@ -170,7 +169,7 @@ const toData = (str) => {
     if (!str.endsWith('")'))        { return undefined; }
     let b64 = str.slice(7, -2);
     return nodebuf ? new Uint8Array(nodebuf.from(b64, 'base64'))
-        : Uint8Array.of(atob(b64));
+        : Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 }
 const toString = (str) => {
     if (!str.startsWith('"')) { return undefined; }
