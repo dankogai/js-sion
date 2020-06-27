@@ -304,7 +304,7 @@ const parse = (str) => {
         undefined;
 }
 const SION = {
-    version: "0.0.5",
+    version: "0.0.6",
     RE_HEXFLOAT: RE_HEXFLOAT,
     RE_HEXFLOAT_G: RE_HEXFLOAT_G,
     parseHexFloat: parseHexFloat,
