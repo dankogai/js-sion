@@ -3,6 +3,7 @@
   "version": "0.0.6",
   "description": "SION deserializer/serializer for ECMAScript",
   "main": "sion.js",
+  "module": "sion.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dankogai/js-sion.git"

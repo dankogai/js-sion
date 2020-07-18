@@ -1,11 +1,12 @@
 //
 // sion.js
 //
+export const version = '0.0.6';
 //                     1          2             3           4
 const pat_hexfloat = '([\+\-]?)0x([0-9A-F]+)\.?([0-9A-F]*)p([\+\-]?[0-9]+)';
-const RE_HEXFLOAT = new RegExp(pat_hexfloat, 'i');
-const RE_HEXFLOAT_G = new RegExp(pat_hexfloat, 'gi');
-const parseHexFloat = (str) => {
+export const RE_HEXFLOAT = new RegExp(pat_hexfloat, 'i');
+export const RE_HEXFLOAT_G = new RegExp(pat_hexfloat, 'gi');
+export const parseHexFloat = (str) => {
     let m = RE_HEXFLOAT.exec(str);
     if (!m) {
         const mx = (/^([+-]?)inf(?:inity)?/i).exec(str);
@@ -16,7 +17,7 @@ const parseHexFloat = (str) => {
     const exponent = (m[4] | 0) - 4 * m[3].length;
     return mantissa * Math.pow(2, exponent);
 };
-const toHexString = (num) => {
+export const toHexString = (num) => {
     if (isNaN(num)) {
         return 'nan';
     }
@@ -63,7 +64,7 @@ const ArrayBuffer2Base64 = (obj) => {
     }
     return undefined;
 }
-const stringify = (obj, replacer, space, depth) => {
+export const stringify = (obj, replacer, space, depth) => {
     depth |= 0;
     let lf = space ? '\n' : '';
     let gp = space ? ' ' : '';
@@ -296,21 +297,19 @@ const toCollection = (tokens) => {
         return elems;
     }
 }
-const parse = (str) => {
+export const parse = (str) => {
     let tokens = tokenize(str);
     return tokens.length === 0 ? undefined :
         tokens.length === 1 ? toElement(tokens[0]) :
         tokens[0] == "[" ? toCollection(tokens) :
         undefined;
 }
-const SION = {
-    version: "0.0.6",
+export const SION = {
+    version: version,
     RE_HEXFLOAT: RE_HEXFLOAT,
     RE_HEXFLOAT_G: RE_HEXFLOAT_G,
     parseHexFloat: parseHexFloat,
     toHexString: toHexString,
     stringify: stringify,
-    tokenize: tokenize,
     parse: parse
 };
-export default SION;

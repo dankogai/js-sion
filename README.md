@@ -9,12 +9,16 @@
 ## Synopsis
 
 ```javascript
-import SION from './sion.js';
+import {SION} from './sion.js';
 //...
 let obj = SION.parse('["formats":["JSON","SION"]]');
 let str = SION.stringify({formats: ["JSON", "SION"]});
 //...
 ```
+
+### CAVEAT
+
+** sion.js no longer use default export. **
 
 ## Usage
 
@@ -28,14 +32,14 @@ let str = SION.stringify({formats: ["JSON", "SION"]});
 In your JS script:
 
 ```javascript
-import SION from './sion.js'; // or wherever you put it
+import {SION} from './sion.js'; // or wherever you put it
 ```
 
 Or in your HTML:
 
 ```html
 <script type="module">
-    import SION from './sion.js';
+    import {SION} from './sion.js';
 </script>
 ```
 
@@ -43,7 +47,7 @@ You can even directly `import` from CDN:
 
 ```html
 <script type="module">
-  import SION from 'https://cdn.rawgit.com/dankogai/js-sion/master/sion.js';
+  import {SION} from 'https://cdn.jsdelivr.net/npm/js-sion/sion.min.js';
 </script>
 ```
 
@@ -58,7 +62,7 @@ There are verious -- too many -- ways to use modules in node.js.  Among which I 
 $ npm install esm js-sion
 $ node -r esm
 % node -r esm 
-> let SION = require('./sion').default;
+> let {SION} = require('./sion');
 undefined
 > SION.parse('["formats":["JSON","SION"]]');
 { formats: [ 'JSON', 'SION' ] }
