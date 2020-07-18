@@ -18,7 +18,7 @@ let str = SION.stringify({formats: ["JSON", "SION"]});
 
 ### CAVEAT
 
-** sion.js no longer use default export. **
+**sion.js no longer use default export**. `s/import SION/import {SION}/.`
 
 ## Usage
 
@@ -47,9 +47,32 @@ You can even directly `import` from CDN:
 
 ```html
 <script type="module">
-  import {SION} from 'https://cdn.jsdelivr.net/npm/js-sion/sion.min.js';
+  import {SION} from 'https://cdn.jsdelivr.net/npm/js-sion@1.0.1/sion.min.js';
 </script>
 ```
+
+Tree-shaken import is also supported.
+
+```javascript
+import {stringify, parse} from './sion.js';
+```
+
+Besides `SION`, the trunk, the follow symbols are exported:
+
+* `RE_HEXFLOAT`:
+  a `RegExp` that matches hexadecimal floating-point number.
+* `RE_HEXFLOAT_G`:
+  same as `RE_HEXFLOAT` with a 'g' flag.
+* `parseHexFloat`:
+  parses hexadecimal floating point.
+* `toHexString`:
+  prints number in hexadecimal floating point format.
+* `stringify`:
+  cf. `JSON.stringify`. stringifies a JS object to a SION string.
+* `parse`:
+  cf. `JSON.parse`. parses SION string to a JS object.
+* `version`:
+  The version of module.
 
 ### on node.js
 
@@ -62,7 +85,7 @@ There are verious -- too many -- ways to use modules in node.js.  Among which I 
 $ npm install esm js-sion
 $ node -r esm
 % node -r esm 
-> let {SION} = require('./sion');
+> let {SION} = require('./sion.js');
 undefined
 > SION.parse('["formats":["JSON","SION"]]');
 { formats: [ 'JSON', 'SION' ] }
