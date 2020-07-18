@@ -8,13 +8,15 @@
     "url": "git+https://github.com/dankogai/js-sion.git"
   },
   "scripts": {
-    "test": "mocha --compilers js:babel-register"
+    "test": "mocha  --require @babel/register"
   },
   "devDependencies": {
-    "babel-preset-env": "^1.7.0",
-    "babel-register": "^6.26.0",
-    "mocha": "^4.0.1",
-    "chai": "^4.1.2"
+    "@babel/core": "^7.10.4",
+    "@babel/plugin-proposal-export-namespace-from": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/register": "^7.10.4",
+    "mocha": "^8.0.1",
+    "chai": "^4.2.0"
   },
   "keywords": [
     "SION",
