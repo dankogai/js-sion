@@ -12,13 +12,10 @@
     "url": "git+https://github.com/dankogai/js-sion.git"
   },
   "scripts": {
-    "test": "mocha  --require @babel/register"
+    "test": "mocha --require esm"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.4",
-    "@babel/plugin-proposal-export-namespace-from": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/register": "^7.10.4",
+    "esm": "^3.2.25",
     "mocha": "^8.0.1",
     "chai": "^4.2.0"
   },
