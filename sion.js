@@ -46,23 +46,14 @@ export const toHexString = (num) => {
     const es = p < 0 ? '' : '+';
     return sign + '0x' + a.toString(16) + 'p' + es + p.toString(10);
 };
-let nodebuf;
-if (typeof module !== 'undefined' && module.exports) {
-    try {
-        nodebuf = require('buffer').Buffer;
-    } catch (err) {}
-}
+const nodebuf = typeof Buffer === 'function' ? Buffer : undefined;
 const ArrayBuffer2Base64 = (obj) => {
-    if (!!Object.getPrototypeOf(obj, 'buffer')) {
-        if (obj.buffer instanceof ArrayBuffer) {
-            return nodebuf ?
-                nodebuf.from(obj.buffer).toString('base64') :
-                btoa(
-                    String.fromCharCode.apply(null, new Uint8Array(obj.buffer))
-                );
-        }
-    }
-    return undefined;
+    return !ArrayBuffer.isView(obj) ? undefined
+        : nodebuf ?
+            nodebuf.from(obj.buffer).toString('base64') :
+            btoa(
+                String.fromCharCode.apply(null, new Uint8Array(obj.buffer))
+            );
 }
 export const stringify = (obj, replacer, space, depth) => {
     depth |= 0;
@@ -85,9 +76,9 @@ export const stringify = (obj, replacer, space, depth) => {
     if (Array.isArray(obj)) {
         return '[' + lf +
             obj.filter(e => typeof e !== 'function')
-            .map(e => stringify(e, replacer, space, depth + 1))
-            .map(e => tb + sp + e)
-            .join(',' + lf) + lf +
+                .map(e => stringify(e, replacer, space, depth + 1))
+                .map(e => tb + sp + e)
+                .join(',' + lf) + lf +
             tb + ']' + (depth == 0 ? lf : '');
     }
     if (obj instanceof Map) {
@@ -108,20 +99,20 @@ export const stringify = (obj, replacer, space, depth) => {
         return '.Data("' + base64 + '")';
     }
     switch (typeof obj) {
-    case 'boolean':
-        return obj.toString();
-    case 'number':
-        return (obj | 0) === obj ? obj.toString() : toHexString(obj)
-    case 'string':
-        return JSON.stringify(obj);
-    default:
-        let kvs = Object.keys(obj)
-            .filter(k => typeof obj[k] !== 'function').map(
-                k => stringify(k, replacer, space, depth + 1) +
-                gp + ':' + gp +
-                stringify(obj[k], replacer, space, depth + 1)
-            );
-        return map2sion(kvs);
+        case 'boolean':
+            return obj.toString();
+        case 'number':
+            return (obj | 0) === obj ? obj.toString() : toHexString(obj)
+        case 'string':
+            return JSON.stringify(obj);
+        default:
+            let kvs = Object.keys(obj)
+                .filter(k => typeof obj[k] !== 'function').map(
+                    k => stringify(k, replacer, space, depth + 1) +
+                        gp + ':' + gp +
+                        stringify(obj[k], replacer, space, depth + 1)
+                );
+            return map2sion(kvs);
     }
 }
 const s_null = "nil";
@@ -164,7 +155,7 @@ const toBool = (str) => {
     return {
         "true": true,
         "false": false
-    } [str];
+    }[str];
 }
 const toDouble = (str) => {
     let m = reDouble.exec(str);
@@ -301,8 +292,8 @@ export const parse = (str) => {
     let tokens = tokenize(str);
     return tokens.length === 0 ? undefined :
         tokens.length === 1 ? toElement(tokens[0]) :
-        tokens[0] == "[" ? toCollection(tokens) :
-        undefined;
+            tokens[0] == "[" ? toCollection(tokens) :
+                undefined;
 }
 export const SION = {
     version: version,
