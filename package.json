@@ -4,17 +4,21 @@
   "description": "SION deserializer/serializer for ECMAScript",
   "main": "sion.js",
   "module": "sion.js",
+  "types": "sion.d.ts",
   "files": [
-    "sion.js"
+    "sion.js",
+    "sion.d.ts"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dankogai/js-sion.git"
   },
   "scripts": {
-    "test": "mocha --require esm"
+    "test": "make clean && make test"
   },
   "devDependencies": {
+    "typescript": "^3.9.7",
+    "@types/node": "^14.0.26",
     "esm": "^3.2.25",
     "mocha": "^8.0.1",
     "chai": "^4.2.0"

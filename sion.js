@@ -10,11 +10,12 @@ export const parseHexFloat = (str) => {
     let m = RE_HEXFLOAT.exec(str);
     if (!m) {
         const mx = (/^([+-]?)inf(?:inity)?/i).exec(str);
-        if (!mx) return NaN;
+        if (!mx)
+            return NaN;
         return mx[1] == '-' ? -1 / 0 : 1 / 0;
     }
     const mantissa = parseInt(m[1] + m[2] + m[3], 16);
-    const exponent = (m[4] | 0) - 4 * m[3].length;
+    const exponent = parseInt(m[4]) - 4 * m[3].length;
     return mantissa * Math.pow(2, exponent);
 };
 export const toHexString = (num) => {
@@ -24,9 +25,11 @@ export const toHexString = (num) => {
     const n = +num;
     if (Object.is(n, +0.0)) {
         return '0x0p+0';
-    } else if (Object.is(n, -0.0)) {
+    }
+    else if (Object.is(n, -0.0)) {
         return '-0x0p+0';
-    } else if (!isFinite(n)) {
+    }
+    else if (!isFinite(n)) {
         return (n < 0 ? '-' : '') + 'inf';
     }
     const sign = n < 0 ? '-' : '';
@@ -37,7 +40,8 @@ export const toHexString = (num) => {
             a *= 2;
             p--;
         }
-    } else {
+    }
+    else {
         while (a >= 2) {
             a /= 2;
             p++;
@@ -51,11 +55,9 @@ const ArrayBuffer2Base64 = (obj) => {
     return !ArrayBuffer.isView(obj) ? undefined
         : nodebuf ?
             nodebuf.from(obj.buffer).toString('base64') :
-            btoa(
-                String.fromCharCode.apply(null, new Uint8Array(obj.buffer))
-            );
-}
-export const stringify = (obj, replacer, space, depth) => {
+            btoa(String.fromCharCode.apply(null, new Uint8Array(obj.buffer)));
+};
+export const stringify = (obj, replacer = (any) => any, space = 0, depth = 0) => {
     depth |= 0;
     let lf = space ? '\n' : '';
     let gp = space ? ' ' : '';
@@ -89,8 +91,7 @@ export const stringify = (obj, replacer, space, depth) => {
             }
             kvs.push(stringify(k, replacer, space, depth + 1) +
                 gp + ':' + gp +
-                stringify(v, replacer, space, depth + 1)
-            );
+                stringify(v, replacer, space, depth + 1));
         }
         return map2sion(kvs);
     }
@@ -102,19 +103,17 @@ export const stringify = (obj, replacer, space, depth) => {
         case 'boolean':
             return obj.toString();
         case 'number':
-            return (obj | 0) === obj ? obj.toString() : toHexString(obj)
+            return (obj | 0) === obj ? obj.toString() : toHexString(obj);
         case 'string':
             return JSON.stringify(obj);
         default:
             let kvs = Object.keys(obj)
-                .filter(k => typeof obj[k] !== 'function').map(
-                    k => stringify(k, replacer, space, depth + 1) +
-                        gp + ':' + gp +
-                        stringify(obj[k], replacer, space, depth + 1)
-                );
+                .filter(k => typeof obj[k] !== 'function').map(k => stringify(k, replacer, space, depth + 1) +
+                gp + ':' + gp +
+                stringify(obj[k], replacer, space, depth + 1));
             return map2sion(kvs);
     }
-}
+};
 const s_null = "nil";
 const s_bool = "true|false";
 const s_double = "([+-]?)(" +
@@ -127,9 +126,9 @@ const s_date = ".Date\\(" + s_double + "\\)";
 // aw…negative lookbehind is not yet available in many browsers
 // so we replace all \" to \u0022 beforehand :-(
 // const s_string  = "\"(.*?)(?<!\\\\)\"";
-const s_string = '"([^"]*)"';;
-const s_base64 =
-    "(?:[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/]+" +
+const s_string = '"([^"]*)"';
+;
+const s_base64 = "(?:[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/]+" +
     "[=]{0,3})?";
 const s_data = ".Data\\(\"" + s_base64 + "\"\\)";
 const s_comment = "//.*?(?:\n|\r|\r\n)";
@@ -140,8 +139,7 @@ const reAll = new RegExp(s_all, 'gm');
 const reDouble = new RegExp("^" + s_double + "$");
 const reInt = new RegExp("^" + s_int + "$");
 const tokenize = (str) => {
-    let tokens = [],
-        matches = [];
+    let tokens = [], matches = [];
     str = str.replace(/[\\]["]/g, '\\u0022'); // quick and dirty escape
     while ((matches = reAll.exec(str)) !== null) {
         if (matches[0].startsWith("//")) {
@@ -150,13 +148,13 @@ const tokenize = (str) => {
         tokens.push(matches[0]);
     }
     return tokens;
-}
+};
 const toBool = (str) => {
     return {
         "true": true,
         "false": false
     }[str];
-}
+};
 const toDouble = (str) => {
     let m = reDouble.exec(str);
     if (!m) {
@@ -164,7 +162,7 @@ const toDouble = (str) => {
     }
     let d = Number(m[0]);
     return isNaN(d) ? parseHexFloat(m[0]) : d;
-}
+};
 const toInt = (str) => {
     let m = reInt.exec(str);
     if (!m) {
@@ -178,7 +176,7 @@ const toInt = (str) => {
         return signum * parseInt(m[2].substr(2), 8);
     }
     return parseInt(m[0]);
-}
+};
 const toDate = (str) => {
     if (!str.startsWith('.Date(')) {
         return undefined;
@@ -188,7 +186,7 @@ const toDate = (str) => {
     }
     let d = toDouble(str.slice(6, -1));
     return isNaN(d) ? undefined : new Date(d * 1000);
-}
+};
 const toData = (str) => {
     if (!str.startsWith('.Data("')) {
         return undefined;
@@ -199,7 +197,7 @@ const toData = (str) => {
     let b64 = str.slice(7, -2);
     return nodebuf ? new Uint8Array(nodebuf.from(b64, 'base64')) :
         Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-}
+};
 const toString = (str) => {
     if (!str.startsWith('"')) {
         return undefined;
@@ -208,7 +206,7 @@ const toString = (str) => {
         return undefined;
     }
     return JSON.parse(str);
-}
+};
 const toElement = (str) => {
     if (str === "nil") {
         return null;
@@ -234,21 +232,21 @@ const toElement = (str) => {
         return v;
     }
     return toString(str);
-}
+};
 const toCollection = (tokens) => {
-    let isDictionary = 2 < tokens.length && tokens[2] === ":" || tokens[1] === ":"
+    let isDictionary = 2 < tokens.length && tokens[2] === ":" || tokens[1] === ":";
     let elems = [];
-    let i = 1,
-        d = 0;
+    let i = 1, d = 0;
     while (i < tokens.length) {
         if (tokens[i] == "[") {
-            let subtokens = ["["]
+            let subtokens = ["["];
             d = 1;
             i += 1;
             while (i < tokens.length) {
                 if (tokens[i] == "[") {
                     d += 1;
-                } else if (tokens[i] == "]") {
+                }
+                else if (tokens[i] == "]") {
                     d -= 1;
                 }
                 subtokens.push(tokens[i]);
@@ -273,7 +271,7 @@ const toCollection = (tokens) => {
             if (elems.length === 0) {
                 return undefined;
             } // safety measure
-            let k = elems.pop()
+            let k = elems.pop();
             dict.set(k, v);
         }
         let obj = {};
@@ -284,17 +282,18 @@ const toCollection = (tokens) => {
             obj[k] = v;
         }
         return obj;
-    } else {
+    }
+    else {
         return elems;
     }
-}
+};
 export const parse = (str) => {
     let tokens = tokenize(str);
     return tokens.length === 0 ? undefined :
         tokens.length === 1 ? toElement(tokens[0]) :
             tokens[0] == "[" ? toCollection(tokens) :
                 undefined;
-}
+};
 export const SION = {
     version: version,
     RE_HEXFLOAT: RE_HEXFLOAT,
