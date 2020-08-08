@@ -47,7 +47,7 @@ You can even directly `import` from CDN:
 
 ```html
 <script type="module">
-  import {SION} from 'https://cdn.jsdelivr.net/npm/js-sion@1.0.1/sion.min.js';
+  import {SION} from 'https://cdn.jsdelivr.net/npm/js-sion@1.1.0/sion.min.js';
 </script>
 ```
 

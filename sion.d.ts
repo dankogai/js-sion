@@ -1,4 +1,4 @@
-export declare const version = "1.0.1";
+export declare const version = "1.1.0";
 export declare const RE_HEXFLOAT: RegExp;
 export declare const RE_HEXFLOAT_G: RegExp;
 export declare const parseHexFloat: (str: string) => number;
