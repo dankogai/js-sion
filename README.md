@@ -41,7 +41,7 @@ Or in your HTML:
 
 ```html
 <script type="module">
-    import {SION} from './sion.js';
+  import {SION} from './sion.js';
 </script>
 ```
 
@@ -86,7 +86,6 @@ There are verious -- too many -- ways to use modules in node.js.  Among which I 
 ```sh
 $ npm install esm js-sion
 $ node -r esm
-% node -r esm 
 > let {SION} = require('./sion.js');
 undefined
 > SION.parse('["formats":["JSON","SION"]]');
