@@ -1,11 +1,26 @@
-//
-// sion.js
-//
+/**
+ *  Licensed under the MIT license.
+ *  http://www.opensource.org/licenses/mit-license.php
+ *
+ *  @author: Dan Kogai <dankogai+github@gmail.com>
+ *
+ *  References:
+ *  @link: https://dankogai.github.io/SION/
+*/
 export const version = '1.1.0';
 //                     1          2             3           4
 const pat_hexfloat = '([\+\-]?)0x([0-9A-F]+)\.?([0-9A-F]*)p([\+\-]?[0-9]+)';
+/**
+ * A regular expression that matches a hexadecimal floating-point notation
+ */
 export const RE_HEXFLOAT = new RegExp(pat_hexfloat, 'i');
+/**
+ * Parse a hexadecimal floating-point notation in `string` to `number`.
+ */
 export const RE_HEXFLOAT_G = new RegExp(pat_hexfloat, 'gi');
+/**
+ * Parse a hexadecimal floating-point notation in `string` to `number`.
+ */
 export const parseHexFloat = (str) => {
     let m = RE_HEXFLOAT.exec(str);
     if (!m) {
@@ -18,6 +33,9 @@ export const parseHexFloat = (str) => {
     const exponent = parseInt(m[4]) - 4 * m[3].length;
     return mantissa * Math.pow(2, exponent);
 };
+/**
+ * Stringify a `number` to a hexadecimal floating-point notation
+ */
 export const toHexString = (num) => {
     if (isNaN(num)) {
         return 'nan';
@@ -57,6 +75,9 @@ const ArrayBuffer2Base64 = (obj) => {
             nodebuf.from(obj.buffer).toString('base64') :
             btoa(String.fromCharCode.apply(null, new Uint8Array(obj.buffer)));
 };
+/**
+ * Stringify a given object to a `SION` string
+ */
 export const stringify = (obj, replacer = (any) => any, space = 0, depth = 0) => {
     depth |= 0;
     let lf = space ? '\n' : '';
@@ -287,6 +308,9 @@ const toCollection = (tokens) => {
         return elems;
     }
 };
+/**
+ * Parses a `SION` string to a JS object
+ */
 export const parse = (str) => {
     let tokens = tokenize(str);
     return tokens.length === 0 ? undefined :
@@ -294,6 +318,9 @@ export const parse = (str) => {
             tokens[0] == "[" ? toCollection(tokens) :
                 undefined;
 };
+/**
+ * A namespace
+ */
 export const SION = {
     version: version,
     RE_HEXFLOAT: RE_HEXFLOAT,
