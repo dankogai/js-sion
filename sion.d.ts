@@ -7,7 +7,7 @@
  *  References:
  *  @link: https://dankogai.github.io/SION/
 */
-export declare const version = "1.1.0";
+export declare const version = "1.1.1";
 /**
  * A regular expression that matches a hexadecimal floating-point notation
  */
