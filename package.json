@@ -3,7 +3,7 @@
   "version": "1.1.1",
   "description": "SION deserializer/serializer for ECMAScript",
   "main": "sion.js",
-  "module": "sion.js",
+  "type": "module",
   "types": "sion.d.ts",
   "files": [
     "sion.js",
@@ -19,7 +19,6 @@
   "devDependencies": {
     "typescript": "^3.9.7",
     "@types/node": "^14.0.26",
-    "esm": "^3.2.25",
     "mocha": "^8.0.1",
     "chai": "^4.2.0"
   },
