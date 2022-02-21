@@ -152,7 +152,7 @@ const s_string = '"([^"]*)"';
 const s_base64 = "(?:[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/]+" +
     "[=]{0,3})?";
 const s_data = ".Data\\(\"" + s_base64 + "\"\\)";
-const s_comment = "//.*?(?:\n|\r|\r\n)";
+const s_comment = "//[^\n\r]*?";
 const s_all = ["\\[", "\\]", ":", ",",
     s_null, s_bool, s_date, s_double, s_int, s_data, s_string, s_comment
 ].join("|");
