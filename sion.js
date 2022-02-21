@@ -7,7 +7,7 @@
  *  References:
  *  @link: https://dankogai.github.io/SION/
 */
-export const version = '1.1.1';
+export const version = '1.2.0';
 //                     1          2             3           4
 const pat_hexfloat = '([\+\-]?)0x([0-9A-F]+)\.?([0-9A-F]*)p([\+\-]?[0-9]+)';
 /**

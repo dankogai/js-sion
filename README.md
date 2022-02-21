@@ -18,10 +18,6 @@ let str = SION.stringify({formats: ["JSON", "SION"]});
 //...
 ```
 
-### CAVEAT
-
-**sion.js no longer use default export**. `s/import SION/import {SION}/.`
-
 ## Usage
 
 [sion.js] has no dependency so you can simply put it anywhere handy.  It is a [ES6 module] so you need a faily modern environments.
@@ -49,7 +45,7 @@ You can even directly `import` from CDN:
 
 ```html
 <script type="module">
-  import {SION} from 'https://cdn.jsdelivr.net/npm/js-sion@1.1.1/sion.min.js';
+  import {SION} from 'https://cdn.jsdelivr.net/npm/js-sion@1.2.0/sion.min.js';
 </script>
 ```
 
@@ -78,19 +74,37 @@ Besides `SION`, the trunk, the follow symbols are exported:
 
 ### on node.js
 
-There are verious -- too many -- ways to use modules in node.js.  Among which I found [esm] the easiest to use.
+Use node 16 or later that support native esm.  You can also use use [standard-things/esm].
 
-[esm]: https://github.com/standard-things/esm
+[standard-things/esm]: https://github.com/standard-things/esm
 
 
 ```sh
 $ npm install esm js-sion
-$ node -r esm
-> let {SION} = require('./sion.js');
+$ node
+> const SION = await import('js-sion');
 undefined
+> SION
+[Module: null prototype] {
+  RE_HEXFLOAT: /([+-]?)0x([0-9A-F]+).?([0-9A-F]*)p([+-]?[0-9]+)/i,
+  RE_HEXFLOAT_G: /([+-]?)0x([0-9A-F]+).?([0-9A-F]*)p([+-]?[0-9]+)/gi,
+  SION: {
+    version: '1.2.0',
+    RE_HEXFLOAT: /([+-]?)0x([0-9A-F]+).?([0-9A-F]*)p([+-]?[0-9]+)/i,
+    RE_HEXFLOAT_G: /([+-]?)0x([0-9A-F]+).?([0-9A-F]*)p([+-]?[0-9]+)/gi,
+    parseHexFloat: [Function: parseHexFloat],
+    toHexString: [Function: toHexString],
+    stringify: [Function: stringify],
+    parse: [Function: parse]
+  },
+  parse: [Function: parse],
+  parseHexFloat: [Function: parseHexFloat],
+  stringify: [Function: stringify],
+  toHexString: [Function: toHexString],
+  version: '1.2.0'
+}
 > SION.parse('["formats":["JSON","SION"]]');
 { formats: [ 'JSON', 'SION' ] }
 >  SION.stringify({formats: ["JSON", "SION"]});
 '["formats":["JSON","SION"]]'
 ```
-
