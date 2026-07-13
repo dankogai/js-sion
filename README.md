@@ -1,6 +1,7 @@
 [![ES2015](https://img.shields.io/badge/JavaScript-ES2015-blue.svg)](http://www.ecma-international.org/ecma-262/6.0/)
 [![MIT LiCENSE](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI via GitHub Actions](https://github.com/dankogai/js-sion/actions/workflows/node.js.yml/badge.svg)](https://github.com/dankogai/js-sion/actions/workflows/node.js.yml)
+[![CI on bun](https://github.com/dankogai/js-sion/actions/workflows/bun.yml/badge.svg)](https://github.com/dankogai/js-sion/actions/workflows/bun.yml)
 
 # js-sion
 
