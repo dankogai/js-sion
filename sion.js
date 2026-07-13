@@ -78,7 +78,7 @@ const ArrayBuffer2Base64 = (obj) => {
 /**
  * Stringify a given object to a `SION` string
  */
-export const stringify = (obj, replacer = (any) => any, space = 0, depth = 0) => {
+export const stringify = (obj, replacer = null, space = 0, depth = 0) => {
     depth |= 0;
     let lf = space ? '\n' : '';
     let gp = space ? ' ' : '';

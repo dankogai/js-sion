@@ -77,8 +77,8 @@ const ArrayBuffer2Base64 = (obj) => {
  * Stringify a given object to a `SION` string
  */
 export const stringify = (
-    obj,
-    replacer = (any) => any,
+    obj: any,
+    replacer: (string[] | ((key: string, value: any) => any) | null) = null,
     space: (number | string) = 0,
     depth = 0
 ) : string => {
