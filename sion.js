@@ -160,7 +160,7 @@ const reAll = new RegExp(s_all, 'gm');
 const reDouble = new RegExp("^" + s_double + "$");
 const reInt = new RegExp("^" + s_int + "$");
 const tokenize = (str) => {
-    let tokens = [], matches = [];
+    let tokens = [], matches = null;
     str = str.replace(/[\\]["]/g, '\\u0022'); // quick and dirty escape
     while ((matches = reAll.exec(str)) !== null) {
         if (matches[0].startsWith("//")) {
