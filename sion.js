@@ -73,7 +73,9 @@ const ArrayBuffer2Base64 = (obj) => {
     return !ArrayBuffer.isView(obj) ? undefined
         : nodebuf ?
             nodebuf.from(obj.buffer).toString('base64')
-            : btoa(String.fromCharCode.apply(null, new Uint8Array(obj.buffer)));
+            : typeof TextDecoder === 'function' ?
+                (new TextDecoder('utf-8')).decode(new Uint8Array(obj.buffer))
+                : btoa(String.fromCharCode.apply(null, new Uint8Array(obj.buffer)));
 };
 /**
  * Stringify a given object to a `SION` string
