@@ -69,11 +69,13 @@ const ArrayBuffer2Base64 = (obj: ArrayBuffer | ArrayBufferView): string | undefi
     return !ArrayBuffer.isView(obj) ? undefined
         : nodebuf ?
             nodebuf.from(obj.buffer).toString('base64')
-            : btoa(
-                String.fromCharCode.apply(
-                    null, new Uint8Array(obj.buffer) as unknown as number[]
-                )
-            );
+            : typeof TextDecoder === 'function' ?
+                (new TextDecoder('utf-8')).decode(new Uint8Array(obj.buffer))
+                : btoa(
+                    String.fromCharCode.apply(
+                        null, new Uint8Array(obj.buffer) as unknown as number[]
+                    )
+                );
 };
 /**
  * Stringify a given object to a `SION` string
@@ -83,7 +85,7 @@ export const stringify = (
     replacer: (string[] | ((key: string, value: any) => any) | null) = null,
     space: (number | string) = 0,
     depth = 0
-) : string => {
+): string => {
     depth |= 0;
     let lf = space ? '\n' : '';
     let gp = space ? ' ' : '';
@@ -241,7 +243,7 @@ const toElement = (str: string): any => {
     if (str === "nil") {
         return null;
     }
-    let v:any = toBool(str);
+    let v: any = toBool(str);
     if (v !== undefined) {
         return v;
     }
