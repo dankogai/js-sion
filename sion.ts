@@ -64,18 +64,15 @@ export const toHexString = (num: number) => {
     const es = p < 0 ? '' : '+';
     return sign + '0x' + a.toString(16) + 'p' + es + p.toString(10);
 };
-const nodebuf = typeof Buffer === 'function' ? Buffer : undefined;
 const ArrayBuffer2Base64 = (obj: ArrayBuffer | ArrayBufferView): string | undefined => {
     return !ArrayBuffer.isView(obj) ? undefined
-        : nodebuf ?
-            nodebuf.from(obj.buffer).toString('base64')
-            : typeof TextDecoder === 'function' ?
-                (new TextDecoder('utf-8')).decode(new Uint8Array(obj.buffer))
-                : btoa(
-                    String.fromCharCode.apply(
-                        null, new Uint8Array(obj.buffer) as unknown as number[]
-                    )
-                );
+        : typeof TextDecoder === 'function' ?
+            (new TextDecoder('utf-8')).decode(new Uint8Array(obj.buffer))
+            : btoa(
+                String.fromCharCode.apply(
+                    null, new Uint8Array(obj.buffer) as unknown as number[]
+                )
+            );
 };
 /**
  * Stringify a given object to a `SION` string
@@ -227,8 +224,9 @@ const toData = (str: string): Uint8Array | undefined => {
         return undefined;
     }
     let b64 = str.slice(7, -2);
-    return nodebuf ? new Uint8Array(nodebuf.from(b64, 'base64')) :
-        Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    return typeof TextEncoder === 'function' ?
+        (new TextEncoder()).encode(b64)
+        : Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 }
 const toString = (str: string): string | undefined => {
     if (!str.startsWith('"')) {
