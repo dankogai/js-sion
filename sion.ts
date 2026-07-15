@@ -154,7 +154,7 @@ const s_date = ".Date\\(" + s_double + "\\)";
 // aw…negative lookbehind is not yet available in many browsers
 // so we replace all \" to \u0022 beforehand :-(
 // const s_string  = "\"(.*?)(?<!\\\\)\"";
-const s_string = '"([^"]*)"';;
+const s_string = "\"((?:\\\\.|[^\"\\\\])*?)\"";
 const s_base64 =
     "(?:[ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/]+" +
     "[=]{0,3})?";
