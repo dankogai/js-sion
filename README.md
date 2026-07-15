@@ -46,7 +46,7 @@ You can even directly `import` from CDN:
 
 ```html
 <script type="module">
-  import {SION} from 'https://cdn.jsdelivr.net/npm/js-sion@1.3.0/sion.min.js';
+  import {SION} from 'https://cdn.jsdelivr.net/npm/js-sion@1.3.1/sion.min.js';
 </script>
 ```
 
@@ -90,7 +90,7 @@ undefined
   RE_HEXFLOAT: /([+-]?)0x([0-9A-F]+).?([0-9A-F]*)p([+-]?[0-9]+)/i,
   RE_HEXFLOAT_G: /([+-]?)0x([0-9A-F]+).?([0-9A-F]*)p([+-]?[0-9]+)/gi,
   SION: {
-    version: '1.3.0',
+    version: '1.3.1',
     RE_HEXFLOAT: /([+-]?)0x([0-9A-F]+).?([0-9A-F]*)p([+-]?[0-9]+)/i,
     RE_HEXFLOAT_G: /([+-]?)0x([0-9A-F]+).?([0-9A-F]*)p([+-]?[0-9]+)/gi,
     parseHexFloat: [Function: parseHexFloat],
@@ -102,7 +102,7 @@ undefined
   parseHexFloat: [Function: parseHexFloat],
   stringify: [Function: stringify],
   toHexString: [Function: toHexString],
-  version: '1.3.0'
+  version: '1.3.1'
 }
 > SION.parse('["formats":["JSON","SION"]]');
 { formats: [ 'JSON', 'SION' ] }
