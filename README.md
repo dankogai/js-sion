@@ -21,7 +21,7 @@ let str = SION.stringify({formats: ["JSON", "SION"]});
 
 ## Usage
 
-[sion.js] has no dependency so you can simply put it anywhere handy.  It is a [ES6 module] so you need a faily modern environments.
+[sion.js] has no dependency so you can simply put it anywhere handy.  It is a [ES6 module] so virtually all modern runtimes support it, browsers or shell commands.
 
 [sion.js]: ./sion.js
 [ES6 module]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import
@@ -73,24 +73,22 @@ Besides `SION`, the trunk, the follow symbols are exported:
 * `version`:
   The version of module.
 
-### on node.js
+### on the repl of node.js or bun
 
-Use node 16 or later that support native esm.  You can also use use [standard-things/esm].
+Example as follows.
 
-[standard-things/esm]: https://github.com/standard-things/esm
-
-
-```sh
-$ npm install esm js-sion
-$ node
-> const SION = await import('js-sion');
+```node
+% node
+Welcome to Node.js v24.18.0.
+Type ".help" for more information.
+> const SION = await import('./sion.js')
 undefined
 > SION
 [Module: null prototype] {
   RE_HEXFLOAT: /([+-]?)0x([0-9A-F]+).?([0-9A-F]*)p([+-]?[0-9]+)/i,
   RE_HEXFLOAT_G: /([+-]?)0x([0-9A-F]+).?([0-9A-F]*)p([+-]?[0-9]+)/gi,
   SION: {
-    version: '1.3.1',
+    version: '1.4.0',
     RE_HEXFLOAT: /([+-]?)0x([0-9A-F]+).?([0-9A-F]*)p([+-]?[0-9]+)/i,
     RE_HEXFLOAT_G: /([+-]?)0x([0-9A-F]+).?([0-9A-F]*)p([+-]?[0-9]+)/gi,
     parseHexFloat: [Function: parseHexFloat],
@@ -102,10 +100,9 @@ undefined
   parseHexFloat: [Function: parseHexFloat],
   stringify: [Function: stringify],
   toHexString: [Function: toHexString],
-  version: '1.3.1'
+  version: '1.4.0'
 }
-> SION.parse('["formats":["JSON","SION"]]');
-{ formats: [ 'JSON', 'SION' ] }
->  SION.stringify({formats: ["JSON", "SION"]});
-'["formats":["JSON","SION"]]'
+> SION.parse(`["version":1.4]`)
+{ version: 1.4 }
+> 
 ```
