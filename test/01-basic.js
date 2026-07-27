@@ -1,4 +1,3 @@
-import {SION} from '../sion.js';
 describe('Load', () => {
   it('SION is an object', () => 
     chai.expect(typeof SION).to.equal('object')

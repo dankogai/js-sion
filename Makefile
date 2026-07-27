@@ -1,16 +1,10 @@
-PJ=package.json
-TS=sion.ts
-JS=sion.js
-MJS=sion.mjs
-DTS=sion.d.ts
+all:
+	npm run build
 
-all: $(PJ) $(JS)
-
-$(JS): $(PJ) $(TS)
-	tsc -d --module nodenext $(TS)
-
-test: $(PJ) $(JS)
-	mocha
+test:
+	npm test
 
 clean:
-	-rm $(DTS) $(MJS) $(JS)
+	npm run clean
+
+.PHONY: all test clean
