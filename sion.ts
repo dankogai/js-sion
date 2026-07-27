@@ -163,120 +163,76 @@ const s_comment = "//[^\n\r]*?";
 const s_all = ["\\[", "\\]", ":", ",",
     s_null, s_bool, s_date, s_double, s_int, s_data, s_string, s_comment
 ].join("|");
+// capture group indices in reAll, by alternation order in s_all:
+//   s_date:   1 = sign, 2 = body (of the embedded s_double)
+//   s_double: 3 = sign, 4 = body
+//   s_int:    5 = sign, 6 = body
+//   s_string: 7 = content
+// keep these in sync when touching s_all!
 const reAll = new RegExp(s_all, 'gm');
-const reDouble = new RegExp("^" + s_double + "$");
-const reInt = new RegExp("^" + s_int + "$");
-const tokenize = (str: string): string[] => {
-    let tokens = [],
+const toNumber = (str: string): number => {
+    const d = Number(str);
+    return isNaN(d) ? parseHexFloat(str) : d;
+}
+// convert a reAll match to its value in one go: which capture group
+// participated tells the type apart, so no second regexp pass is needed
+const toValue = (m: RegExpExecArray): any => {
+    const t = m[0];
+    if (t === 'nil') return null;
+    if (t === 'true') return true;
+    if (t === 'false') return false;
+    if (m[2] !== undefined) {   // .Date(double)
+        const d = toNumber(t.slice(6, -1));
+        return isNaN(d) ? undefined : new Date(d * 1000);
+    }
+    if (m[4] !== undefined) {   // double
+        return toNumber(t);
+    }
+    if (m[6] !== undefined) {   // int
+        const signum = m[5] === '-' ? -1 : +1;
+        return m[6].startsWith('0b') ? signum * parseInt(m[6].substr(2), 2)
+            : m[6].startsWith('0o') ? signum * parseInt(m[6].substr(2), 8)
+                : parseInt(t);
+    }
+    if (t.startsWith('.Data("')) {
+        const b64 = t.slice(7, -2);
+        return typeof TextEncoder === 'function' ?
+            (new TextEncoder()).encode(b64)
+            : Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    }
+    return JSON.parse(t);       // string
+}
+// a token is either a punctuation character or an already-parsed value
+type Token = '[' | ']' | ':' | ',' | { value: any };
+const tokenize = (str: string): Token[] => {
+    let tokens: Token[] = [],
         matches: RegExpExecArray | null = null;
     str = str.replace(/[\\]["]/g, '\\u0022'); // quick and dirty escape
+    reAll.lastIndex = 0;
     while ((matches = reAll.exec(str)) !== null) {
-        if (matches[0].startsWith("//")) {
-            continue;
+        const t = matches[0];
+        if (t === '[' || t === ']' || t === ':' || t === ',') {
+            tokens.push(t);
+        } else if (!t.startsWith('//')) {
+            tokens.push({ value: toValue(matches) });
         }
-        tokens.push(matches[0]);
     }
     return tokens;
 }
-const toBool = (str: string): boolean | undefined => {
-    return {
-        "true": true,
-        "false": false
-    }[str];
-}
-const toDouble = (str: string): number | undefined => {
-    let m = reDouble.exec(str);
-    if (!m) {
-        return undefined;
-    }
-    let d = Number(m[0]);
-    return isNaN(d) ? parseHexFloat(m[0]) : d;
-}
-const toInt = (str: string): number | undefined => {
-    let m = reInt.exec(str);
-    if (!m) {
-        return undefined;
-    }
-    let signum = m[1] === '-' ? -1 : +1;
-    if (m[2].startsWith('0b')) {
-        return signum * parseInt(m[2].substr(2), 2);
-    }
-    if (m[2].startsWith('0o')) {
-        return signum * parseInt(m[2].substr(2), 8);
-    }
-    return parseInt(m[0]);
-}
-const toDate = (str: string): Date | undefined => {
-    if (!str.startsWith('.Date(')) {
-        return undefined;
-    }
-    if (!str.endsWith(')')) {
-        return undefined;
-    }
-    let d = toDouble(str.slice(6, -1));
-    return isNaN(d as number) ? undefined : new Date(d as number * 1000);
-}
-const toData = (str: string): Uint8Array | undefined => {
-    if (!str.startsWith('.Data("')) {
-        return undefined;
-    }
-    if (!str.endsWith('")')) {
-        return undefined;
-    }
-    let b64 = str.slice(7, -2);
-    return typeof TextEncoder === 'function' ?
-        (new TextEncoder()).encode(b64)
-        : Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-}
-const toString = (str: string): string | undefined => {
-    if (!str.startsWith('"')) {
-        return undefined;
-    }
-    if (!str.endsWith('"')) {
-        return undefined;
-    }
-    return JSON.parse(str);
-}
-const toElement = (str: string): any => {
-    if (str === "nil") {
-        return null;
-    }
-    let v: any = toBool(str);
-    if (v !== undefined) {
-        return v;
-    }
-    v = toDate(str);
-    if (v !== undefined) {
-        return v;
-    }
-    v = toDouble(str);
-    if (v !== undefined) {
-        return v;
-    }
-    v = toInt(str);
-    if (v !== undefined) {
-        return v;
-    }
-    v = toData(str);
-    if (v !== undefined) {
-        return v;
-    }
-    return toString(str);
-}
-const toCollection = (tokens: string[]): any => {
+const toCollection = (tokens: Token[]): any => {
     let isDictionary = 2 < tokens.length && tokens[2] === ":" || tokens[1] === ":"
     let elems = [];
     let i = 1,
         d = 0;
     while (i < tokens.length) {
-        if (tokens[i] == "[") {
-            let subtokens = ["["]
+        if (tokens[i] === "[") {
+            let subtokens: Token[] = ["["]
             d = 1;
             i += 1;
             while (i < tokens.length) {
-                if (tokens[i] == "[") {
+                if (tokens[i] === "[") {
                     d += 1;
-                } else if (tokens[i] == "]") {
+                } else if (tokens[i] === "]") {
                     d -= 1;
                 }
                 subtokens.push(tokens[i]);
@@ -288,9 +244,9 @@ const toCollection = (tokens: string[]): any => {
             elems.push(toCollection(subtokens));
             continue;
         }
-        const fuzz = new Set([":", ",", "[", "]"]);
-        if (!fuzz.has(tokens[i])) {
-            elems.push(toElement(tokens[i]));
+        const token = tokens[i];
+        if (typeof token === 'object') {
+            elems.push(token.value);
         }
         i += 1;
     }
@@ -321,9 +277,10 @@ const toCollection = (tokens: string[]): any => {
  */
 export const parse = (str: string) => {
     let tokens = tokenize(str);
+    const head = tokens[0];
     return tokens.length === 0 ? undefined :
-        tokens.length === 1 ? toElement(tokens[0]) :
-            tokens[0] == "[" ? toCollection(tokens) :
+        tokens.length === 1 ? (typeof head === 'object' ? head.value : undefined) :
+            head === "[" ? toCollection(tokens) :
                 undefined;
 }
 /**
