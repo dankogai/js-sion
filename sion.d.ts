@@ -7,7 +7,7 @@
  *  References:
  *  @link: https://dankogai.github.io/SION/
 */
-export declare const version = "1.3.1";
+export declare const version: string;
 /**
  * A regular expression that matches a hexadecimal floating-point notation
  */
@@ -27,7 +27,7 @@ export declare const toHexString: (num: number) => string;
 /**
  * Stringify a given object to a `SION` string
  */
-export declare const stringify: (obj: any, replacer?: string[] | ((key: string, value: any) => any), space?: (number | string), depth?: number) => string;
+export declare const stringify: (obj: any, replacer?: (string[] | ((key: string, value: any) => any) | null), space?: (number | string), depth?: number) => string;
 /**
  * Parses a `SION` string to a JS object
  */
@@ -41,6 +41,6 @@ export declare const SION: {
     RE_HEXFLOAT_G: RegExp;
     parseHexFloat: (str: string) => number;
     toHexString: (num: number) => string;
-    stringify: (obj: any, replacer?: string[] | ((key: string, value: any) => any), space?: (number | string), depth?: number) => string;
+    stringify: (obj: any, replacer?: (string[] | ((key: string, value: any) => any) | null), space?: (number | string), depth?: number) => string;
     parse: (str: string) => any;
 };
